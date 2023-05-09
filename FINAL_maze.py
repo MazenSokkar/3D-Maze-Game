@@ -108,7 +108,7 @@ def main():
     glutInitWindowSize(900, 800)
     glutInitWindowPosition(0, 0)
 
-    window = glutCreateWindow('3D Maze again')
+    window = glutCreateWindow('Experimental Maze')
     # Generate map.
     generator = image_to_array()
     map = generator.generateMap("textures/maze_12.png")
@@ -128,5 +128,5 @@ def main():
     glutMainLoop()
 
 if __name__ == "__main__":
-    print("test")
+
     main()
