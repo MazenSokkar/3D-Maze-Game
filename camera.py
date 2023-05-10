@@ -9,9 +9,9 @@ class Camera:
     def __init__(self, width = 900, height = 800):
         self.locations = []
         self.camera_pos = Vector3([0.0, 0.0, 2.0])
-        self.camera_front = Vector3([0.0, 0.0, -1.0])
+        self.camera_front = Vector3([1.0, 0.0, 0.0])
         self.camera_right = Vector3([1.0, 0.0, 0.0])
-
+        self.throw_direction = self.camera_front
         self.mouse_sensitivity = 0.45
         self.jaw = 0
         self.pitch = 0
@@ -64,21 +64,25 @@ class Camera:
             if not self.collission(new_pos):
                 self.camera_pos += self.camera_front * velocity
             self.angle = self.last_pos - self.jaw + 90
+            self.throw_direction = self.camera_front
         if direction == "BACKWARD":
             new_pos = self.camera_pos - self.camera_front * velocity
             if not self.collission(new_pos):
                 self.camera_pos -= self.camera_front * velocity
             self.angle = self.last_pos - self.jaw - 90
+            self.throw_direction = -self.camera_front
         if direction == "LEFT":
             new_pos = self.camera_pos - self.camera_right * velocity
             if not self.collission(new_pos):
                 self.camera_pos -= self.camera_right * velocity
             self.angle = self.last_pos - self.jaw + 180
+            self.throw_direction = -self.camera_right
         if direction == "RIGHT":
             new_pos = self.camera_pos + self.camera_right * velocity
             if not self.collission(new_pos):
                 self.camera_pos += self.camera_right * velocity
             self.angle = self.last_pos - self.jaw + 180 + 180
+            self.throw_direction = self.camera_right
 
     def fix_cursor_out(self):
         self.lastX = int(self.WIDTH / 2)
