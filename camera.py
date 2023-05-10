@@ -130,8 +130,11 @@ class Camera:
                       self.camera_pos[0] -.03, -0.2,self.camera_pos[2] -.03,
                       0, 1, 0)
     def activeMouse(self,button, state, x, y):
-        glutSetCursor(GLUT_CURSOR_NONE)
-        self.lastX = int(self.WIDTH / 2)
-        self.lastY = int(self.HEIGHT / 2)
-        glutWarpPointer(self.lastX, self.lastY)
-        self.mouseAvaillabe = False
+        if self.mouseAvaillabe == False and button == 0 and state == 0:
+            self.grenades.append(Grenades(self))
+        else:
+            glutSetCursor(GLUT_CURSOR_NONE)
+            self.lastX = int(self.WIDTH / 2)
+            self.lastY = int(self.HEIGHT / 2)
+            glutWarpPointer(self.lastX, self.lastY)
+            self.mouseAvaillabe = False

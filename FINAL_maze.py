@@ -25,7 +25,7 @@ def initGL(Width, Height):
     gluPerspective(90, float(Width) / float(Height), 0.1, 100)
     glMatrixMode(GL_MODELVIEW)
 
-monsters = [Monster(9,2, 90),Monster(2,5, 0),Monster(14,2,5),Monster(18,2,5),Monster(18,16,5),Monster(20,18,6),Monster(15,18,5),Monster(10,18,5),Monster(6,16,5)]
+monsters = [Monster(9,2, 90),Monster(2,5, 0),Monster(14,2,5),Monster(18,2,90),Monster(18,16,5),Monster(20,18,90),Monster(15,18,90),Monster(10,18,90),Monster(6,16,5)]
 coins = [Coin(1,-0.1,2),Coin(4,-0.1,6),Coin(4,-0.1,2),Coin(10,-0.1,5),Coin(14,-0.1,5),Coin(12,-0.1,6),Coin(18,-0.1,5),Coin(18,-0.1,8),Coin(18,-0.1,10),Coin(18,-0.1,12),Coin(18,-0.1,18),Coin(14,-0.1,18),Coin(10,-0.1,16),Coin(10,-0.1,14),Coin(8,-0.1,14),Coin(2,-0.1,18),Coin(2,-0.1,16),Coin(2,-0.1,14),Coin(2,-0.1,12)]
 def drawScene():
 
