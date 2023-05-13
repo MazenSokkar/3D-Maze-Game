@@ -14,37 +14,35 @@ class Camera:
         self.throw_direction = self.camera_front
         self.mouse_sensitivity = 0.45
         self.jaw = 0
+        self.head_jaw = 0
         self.pitch = 0
-
+        self.throw_avillable = True
         self.WIDTH, self.HEIGHT = width, height
         self.lastX, self.lastY = 0, 0
         self.look_up = False
         self.last_pos = self.jaw
         self.angle = 90
-
+        self.head_angle = 0
+        self.step = 0.0
+        self.forward = False
         self.mouseAvaillabe = False
-
+        self.flag = "start"
         self.grenades = []
     def process_mouse_movement(self, xoffset, yoffset, constrain_pitch=True):
-        xoffset *= self.mouse_sensitivity
-        yoffset *= self.mouse_sensitivity
-
         if constrain_pitch:
             if self.pitch > 80:
                 self.pitch = 80
             if self.pitch < -30:
                 self.pitch = -30
-
         self.jaw += xoffset
         self.pitch -= yoffset
 
-        self.update_camera_vectors()
 
-    def update_camera_vectors(self):
         front = Vector3([0.0, 0.0, 0.0])
         front.x = cos(radians(self.jaw)) * cos(radians(self.pitch))
         front.y = sin(radians(self.pitch))
         front.z = sin(radians(self.jaw)) * cos(radians(self.pitch))
+
         self.camera_front = front
         self.camera_right = vector3.cross(self.camera_front, Vector3([0.0, 1.0, 0.0]))
 
@@ -61,28 +59,41 @@ class Camera:
     def process_keyboard(self, direction, velocity):
         if direction == "FORWARD":
             new_pos = self.camera_pos + self.camera_front * velocity
+            self.step = self.step + (0.1 if self.forward else -.1)
+
             if not self.collission(new_pos):
                 self.camera_pos += self.camera_front * velocity
-            self.angle = self.last_pos - self.jaw + 90
+            self.angle = - self.jaw + 90
             self.throw_direction = self.camera_front
         if direction == "BACKWARD":
             new_pos = self.camera_pos - self.camera_front * velocity
+            self.step = self.step + (0.1 if self.forward else -.1)
+
             if not self.collission(new_pos):
                 self.camera_pos -= self.camera_front * velocity
-            self.angle = self.last_pos - self.jaw - 90
+            self.angle = -self.jaw - 90
             self.throw_direction = -self.camera_front
         if direction == "LEFT":
             new_pos = self.camera_pos - self.camera_right * velocity
+            self.step = self.step + (0.1 if self.forward else -.1)
+
             if not self.collission(new_pos):
                 self.camera_pos -= self.camera_right * velocity
-            self.angle = self.last_pos - self.jaw + 180
+            self.angle = -self.jaw + 180
             self.throw_direction = -self.camera_right
         if direction == "RIGHT":
             new_pos = self.camera_pos + self.camera_right * velocity
+            self.step = self.step + (0.1 if self.forward else -.1)
+
             if not self.collission(new_pos):
                 self.camera_pos += self.camera_right * velocity
-            self.angle = self.last_pos - self.jaw + 180 + 180
+            self.angle = -self.jaw + 180 + 180
             self.throw_direction = self.camera_right
+
+        if self.step >= 0.7:
+            self.forward = False
+        if self.step <= -0.7:
+            self.forward = True
 
     def fix_cursor_out(self):
         self.lastX = int(self.WIDTH / 2)
@@ -103,8 +114,10 @@ class Camera:
             self.lastY = ypos
             self.process_mouse_movement(xoffset, yoffset)
             self.fix_cursor_out()
-
-    def keyboard(self, key, x, sy):
+    def throw(self, key, x, y):
+        if key == b' ':
+            self.throw_avillable = True
+    def keyboard(self, key, x, y):
         global grenades
         if key == b'w':
             self.process_keyboard("FORWARD", 0.1)
@@ -116,13 +129,19 @@ class Camera:
             self.process_keyboard("BACKWARD", 0.1)
         if key == b'h':
             self.look_up = not self.look_up
-        if key == b'z':
-            self.grenades.append(Grenades(self))
+        if key == b' ':
+            if self.throw_avillable == True:
+                self.grenades.append(Grenades(self))
+                self.throw_avillable = False
+        if key ==b'p':
+            self.flag ="play"
         if key == b'q':
             os._exit(0)
         if key == b'\x1b':
             glutSetCursor(GLUT_CURSOR_LEFT_ARROW)
             self.mouseAvaillabe = True
+
+        print(key)
 
     def setup_camera(self):
         if self.look_up == True:
@@ -134,11 +153,8 @@ class Camera:
                       self.camera_pos[0] -.03, -0.2,self.camera_pos[2] -.03,
                       0, 1, 0)
     def activeMouse(self,button, state, x, y):
-        if self.mouseAvaillabe == False and button == 0 and state == 0:
-            self.grenades.append(Grenades(self))
-        else:
-            glutSetCursor(GLUT_CURSOR_NONE)
-            self.lastX = int(self.WIDTH / 2)
-            self.lastY = int(self.HEIGHT / 2)
-            glutWarpPointer(self.lastX, self.lastY)
-            self.mouseAvaillabe = False
+        glutSetCursor(GLUT_CURSOR_NONE)
+        self.lastX = int(self.WIDTH / 2)
+        self.lastY = int(self.HEIGHT / 2)
+        glutWarpPointer(self.lastX, self.lastY)
+        self.mouseAvaillabe = False

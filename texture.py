@@ -2,9 +2,10 @@ from OpenGL.GL import *
 from PIL.Image import open
 import pygame
 
+
 class Texture:
 
-    def texture_setup(self,texture_image_binary, texture_name, width, height):
+    def texture_setup(self, texture_image_binary, texture_name, width, height):
         glBindTexture(GL_TEXTURE_2D, texture_name)
 
         # texture init step [6]
@@ -21,11 +22,12 @@ class Texture:
                      0,  # Texture border
                      GL_RGBA, GL_UNSIGNED_BYTE, texture_image_binary)  # texture init step [7]
 
-    def load_and_setup(self,image_path, idx):
+    def load_and_setup(self, image_path, idx):
         # Load images from file system
         image = pygame.image.load(image_path)
         # Convert images to the type needed for textures
-        texture = pygame.image.tostring(image, "RGBA", True)  # texture init step [3]
+        texture = pygame.image.tostring(
+            image, "RGBA", True)  # texture init step [3]
         self.texture_setup(texture, idx, image.get_width(), image.get_height())
 
     def load_textures(self):
@@ -33,10 +35,10 @@ class Texture:
         # Generate textures names from array
         glGenTextures(1, 4)  # texture init step [4]
         # Add textures to openGL [2, 3, 5 ,6 ,7]
-        self.load_and_setup("textures/floor2.jpg", 1)
+        self.load_and_setup("textures/floor.jpg", 1)
         self.load_and_setup("textures/wall2.jpg", 2)
         self.load_and_setup("textures/phot.jpg", 3)
-        self.load_and_setup("textures/spider.png", 4)
+        self.load_and_setup("textures/side.jpg", 4)
         self.load_and_setup("textures/player/front head.png", 5)
         self.load_and_setup("textures/player/backhead.png", 6)
         self.load_and_setup("textures/player/righthead.png", 7)
@@ -50,3 +52,8 @@ class Texture:
         self.load_and_setup("textures/player/backoneleg.png", 14)
         self.load_and_setup("textures/player/right leg.png", 15)
         self.load_and_setup("textures/player/leftleg.png", 16)
+        self.load_and_setup("textures/grenade.jpg", 17)
+        self.load_and_setup("textures/sidegrenades.jpg", 18)
+        self.load_and_setup("textures/win.jpg", 19)
+        self.load_and_setup("textures/lose.jpg", 20)
+        self.load_and_setup("textures/start.png", 21)

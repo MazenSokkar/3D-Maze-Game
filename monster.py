@@ -1,13 +1,16 @@
 from OpenGL.GL import *
+from coins import *
+import pygame
+
 
 class Monster:
-    def __init__(self,x, z, angle):
+    def __init__(self, x, z, angle):
         self.step = 0.0
-        self.INTERVAL = 1
         self.forward = False
         self.x = x
         self.z = z
         self.angle = angle
+
     def head(self):
         glBindTexture(GL_TEXTURE_2D, 4)
         # Front Face
@@ -188,7 +191,7 @@ class Monster:
         glEnd()
 
     ###########################################################################################################
-    def right_back2(self,step):
+    def right_back2(self, step):
         # # Front Face
         glBegin(GL_QUADS)
         glVertex3f(1.5, -0.8, -(0.4 - step))  # Bottom Left
@@ -234,7 +237,7 @@ class Monster:
         glEnd()
 
     ###########################################################################################################
-    def right_front2(self,step):
+    def right_front2(self, step):
         glBegin(GL_QUADS)
         glVertex3f(1.5, -0.8, (0.5 + step))  # Bottom Left
         glVertex3f(1.6, -0.8, (0.5 + step))  # Bottom Right
@@ -369,7 +372,7 @@ class Monster:
         glEnd()
 
     ###########################################################################################################
-    def left_back2(self,step):
+    def left_back2(self, step):
         glBegin(GL_QUADS)
         glVertex3f(-1.5, -0.8, -(0.4 + step))  # Bottom Left
         glVertex3f(-1.6, -0.8, -(0.4 + step))  # Bottom Right
@@ -413,7 +416,7 @@ class Monster:
         glEnd()
 
     ###########################################################################################################
-    def left_front2(self,step):
+    def left_front2(self, step):
         glBegin(GL_QUADS)
         glVertex3f(-1.5, -0.8, (0.5 - step))  # Bottom Left
         glVertex3f(-1.6, -0.8, (0.5 - step))  # Bottom Right
@@ -502,7 +505,7 @@ class Monster:
         glEnd()
 
     ####################################################################################################
-    def right_middle2(self,step):
+    def right_middle2(self, step):
         # # Front Face
         glBegin(GL_QUADS)
         glVertex3f(1.5, -0.8, (0.05 - step))  # Bottom Left
@@ -597,7 +600,7 @@ class Monster:
         glEnd()
 
     ####################################################################################################
-    def left_middle2(self,step):
+    def left_middle2(self, step):
         glBegin(GL_QUADS)
         glVertex3f(-1.5, -0.8, (0.05 + step))  # Bottom Left
         glVertex3f(-1.6, -0.8, (0.05 + step))  # Bottom Right
@@ -639,10 +642,13 @@ class Monster:
         glVertex3f(-1, 0.05, -0.05)  # Top Right
         glVertex3f(-1, 0.05, 0.05)  # Top Left
         glEnd()
+    ####################################################################################################
+
     def set_monster(self):
-        glTranslate(self.x, -0.5, self.z)  ##set monster
+        glPushMatrix()
+        glTranslate(self.x, -0.5, self.z)  # set monster
         glScale(0.5, 0.5, 0.5)
-        glRotate(self.angle,0,1,0)
+        glRotate(self.angle, 0, 1, 0)
         self.head()
         self.right_back1()
         self.right_front1()
@@ -656,19 +662,30 @@ class Monster:
         self.left_front2(self.step)
         self.right_middle2(self.step)
         self.left_middle2(self.step)
-        self.step = self.step + (0.001 if self.forward else -.001)
+        glPopMatrix()
+        self.step = self.step + (0.02 if self.forward else -.02)
 
         if self.step >= 0.12:
             self.forward = False
         if self.step <= -0.12:
             self.forward = True
+    ####################################################################################################
+
     def draw(self):
+        global coins_result
         glPushMatrix()
-        self.set_monster()  ##set monster in maze
+        self.set_monster()  # set monster in maze
         glPopMatrix()
-        self.step = self.step + (0.001 if self.forward else -.001)
+        self.step = self.step + (0.02 if self.forward else -.02)
 
         if self.step >= 0.2:
             self.forward = False
         if self.step <= -0.2:
             self.forward = True
+    ##################################################################################################
+
+    def collission_1(self, cam):
+        global coins_result
+        if cam.camera_pos[0] + 0.6 > self.x and cam.camera_pos[0] - 0.6 < self.x:
+            if cam.camera_pos[2] + 0.6 > self.z and cam.camera_pos[2] - 0.6 < self.z:
+                return True
